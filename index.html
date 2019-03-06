@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="main.css">
+    <title>Image Processor</title>
+</head>
+
+<body>
+    <h2>Image Processor</h2>
+    
+    <!-- <div>
+        <input id="uploadFile" placeholder="Choose File" disabled="disabled" />
+        <div class="upload-btn-wrapper">
+            <button class="btn">Upload a file</button>
+            <input type="file" name="myfile" onchange="uploadFile(this.files)" />
+        </div>
+    </div> -->
+
+    <div>
+        <input type="file" name="myfile" id="myfile" />
+        <button onclick="uploadFile()">Upload File</button>
+    </div>
+
+    <div id="imageProcessor" style="padding-top: 3rem; display: none; float: left; width: 100%;">
+        <div style="float: left; width: 30%;">
+            <strong style="display: block; padding-bottom: 0.3rem;">Original Image</strong>
+            <img alt="Original Uploaded Image" id="originalImage">
+        </div>
+        <div style="float: left; width: 30%;">
+            <button onclick="grayscale()">GrayScale</button>
+            <button onclick="flipHorizontal()">Flip Horizontal</button>
+            <button onclick="flipVertical()">Flip Vertical</button>
+        </div>
+        <div style="float: left; width: 30%;">
+            <strong style="display: block; padding-bottom: 0.3rem;">Transformed Image</strong>
+            <img alt="Transformed Image Image" id="transformedImage">
+        </div>
+        
+    </div>
+    <div style="clear: both;"></div>
+
+    <!-- <div>
+        <button onclick="grayscale()">Grayscale Image</button>
+        <img src="" alt="" id="transformedImage">
+    </div> -->
+    
+
+    <script src="jquery.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
