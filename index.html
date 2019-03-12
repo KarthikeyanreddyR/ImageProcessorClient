@@ -12,17 +12,9 @@
 <body style="padding: 1rem 3rem;">
     <h2>Image Processor</h2>
 
-    <!-- <div>
-        <input id="uploadFile" placeholder="Choose File" disabled="disabled" />
-        <div class="upload-btn-wrapper">
-            <button class="btn">Upload a file</button>
-            <input type="file" name="myfile" onchange="uploadFile(this.files)" />
-        </div>
-    </div> -->
-
     <div>
-        <input type="file" name="myfile" id="myfile" />
-        <button onclick="uploadFile()">Upload File</button>
+        <input type="file" name="myfile" id="myfile" onchange="uploadFile()" />
+        <button onclick="download()">Download File</button>
     </div>
 
     <div id="imageProcessor" style="padding-top: 3rem; display: none; float: left; width: 100%;">
@@ -33,58 +25,56 @@
         <div style="float: left; width: 30%;">
             <form id="transformations_form" name="transformations_form" action="javascript:void(0)">
                 <div>
-                    <input type="checkbox" name="" id="chkbx" value="GRAYSCALE"> <span>Grayscale</span><br>
+                    <input type="checkbox" name="" id="chkbx" value="GRAYSCALE"> <span>Grayscale</span>
                 </div>
                 <div>
-                    <input type="checkbox" name="" id="chkbx" value="FLIP"> <span>Flip</span>&nbsp;
-                    <div id="flip_params" style="padding-left: 1rem; display: none">
-                        <input type="radio" name="flip" id="flip_hori" value="HORIZONTAL" checked>Horizontal
-                        <input type="radio" name="flip" id="flip_veri" value="VERTICAL">Vertical
-                    </div>
+                    <input type="checkbox" name="" id="chkbx" value="FLIP_HORIZONTAL"> <span>Flip Horizontal</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="" id="chkbx" value="FLIP_VERTICAL"> <span>Flip Vertical</span>
                 </div>
                 <div>
                     <input type="checkbox" name="" id="chkbx" value="ROTATE"> <span>Rotate</span><br>
                     <div id="rotate_params" style="display: none">
-                            <div style="float: left;padding-left: 1.5rem;">
-                                    <label for="degree">Degree</label> <br> <input type="number" name="" id="degree" value="0">
-                                </div>
-                                <span style="float: left;padding: 0px 1rem;padding-top: 1rem;">OR</span>
-                                <div style="float: left;">
-                                    <input type="radio" name="rotate" id="rotate_left" value="LEFT" checked> Left <br>
-                                    <input type="radio" name="rotate" id="rotate_right" value="RIGHT"> Right <br>
-                                </div>
-                                <div style="clear: both;"></div>
+                        <div style="padding-left: 1.5rem;">
+                            <label for="degree">Degrees (+/-)</label> <br> <input type="number" name="" id="degrees"
+                                value="0" onchange="updateRotateOptions()">
+                        </div>
                     </div>
-                    
+                </div>
+                <div>
+                    <input type="checkbox" name="" id="chkbx" value="ROTATE_LEFT"> <span>Rotate Left</span>
+                </div>
+                <div>
+                    <input type="checkbox" name="" id="chkbx" value="ROTATE_RIGHT"> <span>Rotate Right</span>
                 </div>
                 <div>
                     <input type="checkbox" name="" id="chkbx" value="RESIZE"> <span>Resize</span><br>
                     <div id="resize_params" style="padding-left: 1.5rem; display: none;">
-                        <label for="width">Width</label> <input type="number" name="resize_width" id="width" value="0"> <br>
-                        <label for="height">Height</label> <input type="number" name="resize_height" id="height" value="0">
+                        <label for="width">Width</label> <input type="number" id="width" value="0"
+                            onchange="updateResizeOptions()">
+                        <br>
+                        <label for="height">Height</label> <input type="number" id="height" value="0"
+                            onchange="updateResizeOptions()">
                     </div>
                 </div>
                 <div>
                     <input type="checkbox" name="" id="chkbx" value="THUMBNAIL"> <span>Thumbnail</span>
                 </div>
                 <div>
-                    <button onclick="transform1()"> Transform </button>
+                    <button onclick="transform()"> Transform </button>
                 </div>
             </form>
         </div>
         <div style="float: left; width: 30%;">
             <strong style="display: block; padding-bottom: 0.3rem;">Transformed Image</strong>
-            <img alt="Transformed Image Image" id="transformedImage">
+            <a id="download" href="" download>
+                <img alt="Transformed Image" id="transformedImage">
+            </a>
         </div>
 
     </div>
     <div style="clear: both;"></div>
-
-    <!-- <div>
-        <button onclick="grayscale()">Grayscale Image</button>
-        <img src="" alt="" id="transformedImage">
-    </div> -->
-
 
     <script src="jquery.js"></script>
     <script src="main.js"></script>

@@ -1,10 +1,11 @@
 var _globalFile;
+var _imageType;
 var _api = {
     domain: 'http://localhost:8080/ImageProcessor/api'
 }
 let transformData = {
-    imageAsBase64String: null,
-    transformations: null
+    image_string: null,
+    transformations: []
 }
 function getBase64(file) {
     return new Promise((resolve, reject) => {
@@ -21,9 +22,8 @@ function getBase64(file) {
     });
 }
 
-var uploadFile = function (files) {
+function uploadFile() {
     var files = document.getElementById("myfile").files;
-    console.log(files);
     if (files.length === 0) {
         return;
     }
@@ -31,25 +31,39 @@ var uploadFile = function (files) {
     _globalFile = file;
 
     getBase64(file).then(function (data) {
-        transformData.imageAsBase64String = data;
+        transformData.image_string = data;
+        _imageType = data.substring(0, data.indexOf(",") + 1);
         $("#imageProcessor").css("display", "block");
         $("#originalImage").attr("src", data);
-        $("#transformedImage").attr("src", data);
+        //$("#transformedImage").attr("src", data);
     });
 };
 
-function transform1() {
-    console.log($("#transformations_form"))
+function download() {
+    $.ajax({
+        url: _api.domain + '/download',
+        type: 'GET',
+        data: null,
+        success: function (res) {
+           console.log(res);
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
 }
 
 function transform() {
-    console.log(transformData);
     $.ajax({
         url: _api.domain + '/transform',
         type: 'POST',
         data: JSON.stringify(transformData),
-        success: function (data) {
-            console.log(data);
+        success: function (res) {
+            console.log(res);
+            $("#transformedImage").attr("src", _imageType + res.data.success);
+            $("#download").attr("href", _imageType + res.data.success)
+            transformData.image_string = _imageType + res.data.success;
+            console.log(_imageType);
         },
         error: function (data) {
             console.log(data);
@@ -62,29 +76,152 @@ function transform() {
 }
 
 $(document).on('change', '#chkbx', function (e) {
-    console.log(e);
     if (e.target.checked) {
-        toggle(e.target.value, "block");        
+        toggle(e.target.value, "block");
+        toggleTransformation(e.target.value, true);
     } else {
-        toggle(e.target.value, "none");    
+        toggle(e.target.value, "none");
+        toggleTransformation(e.target.value, false);
     }
 });
 
 function toggle(value, toggle) {
     switch (value) {
-        case "FLIP":
-            console.log("flip");
-            $("#flip_params").css("display", toggle);
-            break;
         case "ROTATE":
-            console.log("rotate")
             $("#rotate_params").css("display", toggle);
             break;
         case "RESIZE":
-            console.log("resize")
             $("#resize_params").css("display", toggle);
             break;
         default:
             break;
+    }
+}
+
+function updateResizeOptions() {
+    var width = Number($("#width").val());
+    var height = Number($("#height").val());
+    $.each(transformData.transformations, function() {
+        if(this.transform_type === "RESIZE"){
+            this.options.width = width;
+            this.options.height = height;
+        }
+    });
+}
+
+function updateRotateOptions() {
+    var degree = Number($("#degrees").val());
+    $.each(transformData.transformations, function() {
+        if(this.transform_type === "ROTATE"){
+            if(this.options["degrees"] != undefined) {
+                this.options.degrees = degree;
+            }
+        }
+    });
+}
+
+function toggleTransformation(value, toggle) {
+    if (toggle) {
+        // add transformation
+        let transform = {
+            transform_type: value
+        }
+        switch (value) {
+            case "ROTATE":
+                transform.options = {
+                    degrees: Number($("#degrees").val())
+                }
+                transformData.transformations.push(transform);
+                break;
+            case "ROTATE_LEFT":
+                transform.transform_type = "ROTATE";
+                transform.options = {
+                    orientation: "LEFT"
+                }
+                transformData.transformations.push(transform);
+                break;
+            case "ROTATE_RIGHT":
+                transform.transform_type = "ROTATE";
+                transform.options = {
+                    orientation: "RIGHT"
+                }
+                transformData.transformations.push(transform);
+                break;
+            case "RESIZE":
+                transform.options = {
+                    width: Number($("#width").val()),
+                    height: Number($("#height").val())
+                }
+                transformData.transformations.push(transform);
+                break;
+            case "FLIP_HORIZONTAL":
+                transform.transform_type = "FLIP";
+                transform.options = {
+                    orientation: "HORIZONTAL"
+                }
+                transformData.transformations.push(transform);
+                break;
+            case "FLIP_VERTICAL":
+                transform.transform_type = "FLIP";
+                transform.options = {
+                    orientation: "VERTICAL"
+                }
+                transformData.transformations.push(transform);
+                break;
+            case "GRAYSCALE":
+                transform.options = {};
+                transformData.transformations.push(transform);
+                break;
+            case "THUMBNAIL":
+                transform.options = {};
+                transformData.transformations.push(transform);
+                break;
+        }
+    } else {
+        // remove transformation
+        var arr = [];
+        var oriArr = transformData.transformations;
+        switch (value) {
+            case "ROTATE_LEFT":
+                arr = oriArr.filter(obj => {
+                    if (obj.transform_type != "ROTATE") {
+                        return obj;
+                    } else if (obj.options.orientation != "LEFT") {
+                        return obj;
+                    }
+                });
+                break;
+            case "ROTATE_RIGHT":
+                arr = oriArr.filter(obj => {
+                    if (obj.transform_type != "ROTATE") {
+                        return obj;
+                    } else if (obj.options.orientation != "RIGHT") {
+                        return obj;
+                    }
+                });
+                break;
+            case "FLIP_HORIZONTAL":
+                arr = oriArr.filter(obj => {
+                    if (obj.transform_type != "FLIP") {
+                        return obj;
+                    } else if (obj.options.orientation != "HORIZONTAL") {
+                        return obj;
+                    }
+                });
+                break;
+            case "FLIP_VERTICAL":
+                arr = oriArr.filter(obj => {
+                    if (obj.transform_type != "FLIP") {
+                        return obj;
+                    } else if (obj.options.orientation != "VERTICAL") {
+                        return obj;
+                    }
+                });
+                break;
+            default:
+                arr = oriArr.filter(obj => { return obj.transform_type != value });
+                break;
+        }
+        transformData.transformations = arr;
     }
 }
