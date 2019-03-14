@@ -13,7 +13,7 @@
     <h2>Image Processor</h2>
 
     <div>
-        <input type="file" name="myfile" id="myfile" onchange="uploadFile()" />
+        <input type="file" name="myfile" id="myfile" onchange="uploadFile()" accept=".png, .jpg, .jpeg" />
         <button onclick="download()">Download File</button>
     </div>
 
@@ -68,9 +68,7 @@
         </div>
         <div style="float: left; width: 30%;">
             <strong style="display: block; padding-bottom: 0.3rem;">Transformed Image</strong>
-            <a id="download" href="" download>
-                <img alt="Transformed Image" id="transformedImage">
-            </a>
+            <img alt="Transformed Image" id="transformedImage" onclick="loadInNewTab()" style="cursor: pointer;">
         </div>
 
     </div>

@@ -36,6 +36,8 @@ function uploadFile() {
         $("#imageProcessor").css("display", "block");
         $("#originalImage").attr("src", data);
         //$("#transformedImage").attr("src", data);
+    }, function(data) {
+        console.log(data);
     });
 };
 
@@ -53,6 +55,12 @@ function download() {
     });
 }
 
+function loadInNewTab() {
+    var base64URL = $("#transformedImage").attr("src");
+    var win = window.open();
+    win.document.write('<iframe src="' + base64URL  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+}
+
 function transform() {
     $.ajax({
         url: _api.domain + '/transform',
@@ -62,7 +70,7 @@ function transform() {
             console.log(res);
             $("#transformedImage").attr("src", _imageType + res.data.success);
             $("#download").attr("href", _imageType + res.data.success)
-            transformData.image_string = _imageType + res.data.success;
+            //transformData.image_string = _imageType + res.data.success;
             console.log(_imageType);
         },
         error: function (data) {
